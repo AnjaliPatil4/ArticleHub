@@ -1,10 +1,13 @@
-import React, { useContext } from "react";
-import NoteContext from "../context/notes/NoteContext";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const NoteItem = (props) => {
-  const context = useContext(NoteContext);
-  const { deleteNote, editNote } = context;
-  const { note, updateNote } = props;
+  const { note, deleteNote, showAlert, updateNote } = props;
+  const navigate = useNavigate(); // Hook for navigation
+
+  const handleViewDetails = () => {
+    navigate("/note-details", { state: { note } }); // Pass note details via state
+  };
 
   return (
     <div className="col-md-3">
@@ -16,7 +19,7 @@ const NoteItem = (props) => {
             className="fa-solid fa-trash"
             onClick={() => {
               deleteNote(note._id);
-              props.showAlert("Deleted Successfully", "success");
+              showAlert("Deleted Successfully", "success");
             }}
           ></i>
           <i
@@ -25,6 +28,12 @@ const NoteItem = (props) => {
               updateNote(note);
             }}
           ></i>
+          <button
+            className="btn btn-info mt-2"
+            onClick={handleViewDetails} // Navigate and pass state
+          >
+            View Details
+          </button>
         </div>
       </div>
     </div>

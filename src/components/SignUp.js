@@ -29,7 +29,7 @@ const SignUp = (props) => {
       // Save the auth-token in local storage and redirect
       localStorage.setItem("token", json.token);
       props.showAlert("Account Created Successfully", "success");
-      history("/");
+      history("/home");
     } else {
       props.showAlert("Invalid Credentials", "danger");
     }

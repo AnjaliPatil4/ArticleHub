@@ -7,9 +7,10 @@ import NoteState from "./context/notes/NoteState";
 import Alert from "./components/Alert";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import HomePage from "./components/HomePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PersonalDashboard from "./components/PersonalDashboard";
-
+import NoteDetails from "./components/NoteDetails";
 function App() {
   const [alert, setAlert] = useState(null);
   const showAlert = (message, typ) => {
@@ -31,12 +32,14 @@ function App() {
 
         <div className="container mt-5">
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/home" element={<Home />} />
             <Route
               exact
               path="/notes"
               element={<PersonalDashboard showAlert={showAlert} />}
             />
+            <Route path="/note-details" element={<NoteDetails />} />
             <Route
               exact
               path="/login"

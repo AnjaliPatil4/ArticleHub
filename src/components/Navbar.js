@@ -5,7 +5,7 @@ const Navbar = () => {
   let history = useNavigate();
   const handlelogout = () => {
     localStorage.removeItem("token");
-    history("./");
+    history("./home");
   };
   return (
     <>
@@ -39,6 +39,17 @@ const Navbar = () => {
                   to="/"
                 >
                   Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className={`nav-link ${
+                    location.pathname === "/home" ? "active" : ""
+                  }`}
+                  aria-current="page"
+                  to="/home"
+                >
+                  Notes
                 </Link>
               </li>
               <li className="nav-item">
