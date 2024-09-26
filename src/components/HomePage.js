@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -10,11 +11,16 @@ import {
 } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import imageNotes from "./imageNotes.png";
+
 const HomePage = () => {
+  const navigate = useNavigate(); // Hook for navigation
+
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [scrollIndex, setScrollIndex] = useState(0);
-  const [notes, setNotes] = useState([]); // Track scroll position
+  const [scrollIndexArticles, setScrollIndexArticles] = useState(0); // Separate state for articles scroll index
+  const [scrollIndexNotes, setScrollIndexNotes] = useState(0); // Separate state for notes scroll index
+  const [notes, setNotes] = useState([]);
+
   useEffect(() => {
     const fetchNotes = async () => {
       try {
@@ -34,6 +40,7 @@ const HomePage = () => {
 
     fetchNotes();
   }, []);
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -50,22 +57,40 @@ const HomePage = () => {
     fetchArticles();
   }, []);
 
-  const handlePrevClick = () => {
-    setScrollIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+  // Independent scroll handlers for articles
+  const handlePrevClickArticles = () => {
+    setScrollIndexArticles((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
   };
 
-  const handleNextClick = () => {
-    setScrollIndex((prevIndex) =>
+  const handleNextClickArticles = () => {
+    setScrollIndexArticles((prevIndex) =>
       prevIndex < Math.ceil(articles.length / 4) - 1 ? prevIndex + 1 : prevIndex
     );
   };
+
+  // Independent scroll handlers for notes
+  const handlePrevClickNotes = () => {
+    setScrollIndexNotes((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+  };
+
   const handleNextClickNotes = () => {
-    setScrollIndex((prevIndex) =>
+    setScrollIndexNotes((prevIndex) =>
       prevIndex < Math.ceil(notes.length / 4) - 1 ? prevIndex + 1 : prevIndex
     );
   };
-  const visibleNotes = notes.slice(scrollIndex * 4, (scrollIndex + 1) * 4);
-  const visibleArticles = articles.slice(scrollIndex * 4, scrollIndex * 4 + 4);
+
+  const visibleNotes = notes.slice(
+    scrollIndexNotes * 4,
+    (scrollIndexNotes + 1) * 4
+  );
+  const visibleArticles = articles.slice(
+    scrollIndexArticles * 4,
+    scrollIndexArticles * 4 + 4
+  );
+
+  const handleViewDetails = (note) => {
+    navigate("/note-details", { state: { note } }); // Pass note details via state
+  };
 
   return (
     <Container
@@ -105,8 +130,12 @@ const HomePage = () => {
         Latest Articles
       </Typography>
 
+      {/* Article Section */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <IconButton onClick={handlePrevClick} disabled={scrollIndex === 0}>
+        <IconButton
+          onClick={handlePrevClickArticles}
+          disabled={scrollIndexArticles === 0}
+        >
           <ArrowBackIos />
         </IconButton>
 
@@ -147,19 +176,19 @@ const HomePage = () => {
         </div>
 
         <IconButton
-          onClick={handleNextClick}
-          disabled={scrollIndex === Math.ceil(articles.length / 4) - 1}
+          onClick={handleNextClickArticles}
+          disabled={scrollIndexArticles === Math.ceil(articles.length / 4) - 1}
         >
           <ArrowForwardIos />
         </IconButton>
       </div>
+
       <Typography
         variant="h4"
         component="h5"
         gutterBottom
         style={{
           display: "flex",
-          // justifyContent: "center",
           marginBottom: "20px",
           marginTop: "30px",
           marginLeft: "50px",
@@ -169,8 +198,12 @@ const HomePage = () => {
         Read from Article Hub...
       </Typography>
 
+      {/* Notes Section */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <IconButton onClick={handlePrevClick} disabled={scrollIndex === 0}>
+        <IconButton
+          onClick={handlePrevClickNotes}
+          disabled={scrollIndexNotes === 0}
+        >
           <ArrowBackIos />
         </IconButton>
 
@@ -191,7 +224,9 @@ const HomePage = () => {
                 margin: "0 10px",
                 height: "300px",
                 overflow: "visible",
+                cursor: "pointer",
               }}
+              onClick={() => handleViewDetails(note)}
             >
               {/* Floating Tag */}
               <div
@@ -243,7 +278,7 @@ const HomePage = () => {
 
         <IconButton
           onClick={handleNextClickNotes}
-          disabled={scrollIndex === Math.ceil(notes.length / 4) - 1}
+          disabled={scrollIndexNotes === Math.ceil(notes.length / 4) - 1}
         >
           <ArrowForwardIos />
         </IconButton>

@@ -49,7 +49,7 @@ const Navbar = () => {
                   aria-current="page"
                   to="/home"
                 >
-                  Notes
+                  Add Note
                 </Link>
               </li>
               <li className="nav-item">
