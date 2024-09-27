@@ -16,10 +16,10 @@ const NoteItem = (props) => {
   };
 
   // Limit description to 40 words
-  const limitedDescription =
-    note.description.split(" ").slice(0, 35).join(" ") +
-    (note.description.split(" ").length > 35 ? "..." : "");
-
+  const limitedDescription = note.description
+    ? note.description.split(" ").slice(0, 35).join(" ") +
+      (note.description.split(" ").length > 35 ? "..." : "")
+    : "No description available";
   return (
     <div className="col-md-3">
       <Card

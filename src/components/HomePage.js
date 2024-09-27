@@ -10,11 +10,12 @@ import {
   IconButton,
 } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
-import imageNotes from "./imageNotes.png";
+import imageNotes from "./lovely-flowers-concept-with-modern-notebook (1).jpg";
 
 const HomePage = () => {
   const navigate = useNavigate();
-
+  const defaultImage =
+    "https://images.pexels.com/photos/5537544/pexels-photo-5537544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [scrollIndexArticles, setScrollIndexArticles] = useState(0);
@@ -94,15 +95,17 @@ const HomePage = () => {
     <Container style={{ padding: 0, width: "100%" }}>
       <div
         style={{
-          marginTop: "-40px",
+          marginTop: "-47px",
           marginBottom: "20px",
-          width: "100%",
+          width: "119%",
           overflow: "hidden",
+          marginLeft: "-110px",
+          marginRight: "1px",
         }}
       >
         <CardMedia
           component="img"
-          height="300"
+          height="350"
           image={imageNotes}
           alt="Hero Image"
           style={{ width: "100%", objectFit: "cover" }}
@@ -139,15 +142,17 @@ const HomePage = () => {
           }}
         >
           {visibleArticles.map((article, index) => (
-            <Card key={index} style={{ flex: "1 1 25%", margin: "0 10px" }}>
-              {article.urlToImage && (
-                <CardMedia
-                  component="img"
-                  height="130"
-                  image={article.urlToImage}
-                  alt={article.title}
-                />
-              )}
+            <Card
+              key={index}
+              style={{ flex: "1 1 25%", margin: "0 10px" }}
+              onClick={() => window.open(article.url, "_blank")}
+            >
+              <CardMedia
+                component="img"
+                height="140"
+                image={article.urlToImage || defaultImage} // Use default image if not available
+                alt={article.title}
+              />
               <CardContent>
                 <Typography variant="h6" component="h2">
                   {article.title.substring(0, 30)}
@@ -175,7 +180,7 @@ const HomePage = () => {
         style={{
           display: "flex",
           marginBottom: "20px",
-          marginTop: "30px",
+          marginTop: "50px",
           marginLeft: "50px",
           fontSize: "30px",
         }}
@@ -197,6 +202,7 @@ const HomePage = () => {
             overflow: "visible",
             width: "100%",
             justifyContent: "space-between",
+            height: "300px",
           }}
         >
           {visibleNotes.map((note, index) => (

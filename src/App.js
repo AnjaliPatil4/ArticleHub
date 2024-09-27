@@ -30,7 +30,7 @@ function App() {
           <Alert alert={{ message: alert.message, typ: alert.typ }} />
         ) : null}
 
-        <div className="container mt-5">
+        <div className=" mt-5">
           <Routes>
             <Route exact path="/" element={<HomePage />} />
             <Route
