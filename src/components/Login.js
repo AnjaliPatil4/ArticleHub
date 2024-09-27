@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 
 const Login = (props) => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   let history = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -28,54 +37,51 @@ const Login = (props) => {
       setCredentials({ email: "", password: "" });
     }
   };
+
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
   return (
-    <div>
+    <Container maxWidth="xs" sx={{ mt: 5 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Login
+      </Typography>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email address
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
+          <TextField
+            label="Email address"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             name="email"
-            aria-describedby="emailHelp"
             value={credentials.email}
             onChange={onChange}
+            required
           />
-          <div id="emailHelp" className="form-text">
-            We'll never share your email with anyone else.
-          </div>
         </div>
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
+          <TextField
+            label="Password"
             type="password"
-            className="form-control"
-            id="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             name="password"
             value={credentials.password}
             onChange={onChange}
+            required
           />
         </div>
-        <div className="mb-3 form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="exampleCheck1"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
+        <FormControlLabel
+          control={<Checkbox id="exampleCheck1" />}
+          label="Remember me"
+        />
+        <Button type="submit" variant="contained" color="secondary" fullWidth>
           Submit
-        </button>
+        </Button>
       </form>
-    </div>
+    </Container>
   );
 };
 

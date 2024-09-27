@@ -33,7 +33,11 @@ function App() {
         <div className="container mt-5">
           <Routes>
             <Route exact path="/" element={<HomePage />} />
-            <Route exact path="/home" element={<Home />} />
+            <Route
+              exact
+              path="/home"
+              element={<Home showAlert={showAlert} />}
+            />
             <Route
               exact
               path="/notes"

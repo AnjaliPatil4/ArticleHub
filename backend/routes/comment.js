@@ -5,11 +5,12 @@ const Comment = require("../models/Comment");
 const User = require("../models/User");
 router.post("/add/:noteId", fetchuser, async (req, res) => {
   try {
-    const { content } = req.body;
+    const { content, rating } = req.body;
     const noteId = req.params.noteId;
 
     const comment = new Comment({
       content,
+      rating,
       user: req.user.id,
       // Add the user ID from the token
       note: noteId,

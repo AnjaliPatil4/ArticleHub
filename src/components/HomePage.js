@@ -13,12 +13,12 @@ import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import imageNotes from "./imageNotes.png";
 
 const HomePage = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [scrollIndexArticles, setScrollIndexArticles] = useState(0); // Separate state for articles scroll index
-  const [scrollIndexNotes, setScrollIndexNotes] = useState(0); // Separate state for notes scroll index
+  const [scrollIndexArticles, setScrollIndexArticles] = useState(0);
+  const [scrollIndexNotes, setScrollIndexNotes] = useState(0);
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const HomePage = () => {
         );
         if (response.ok) {
           const data = await response.json();
-          setNotes(data); // Assuming the API returns an array of notes
+          setNotes(data);
         } else {
           console.error("Failed to fetch notes");
         }
@@ -57,7 +57,6 @@ const HomePage = () => {
     fetchArticles();
   }, []);
 
-  // Independent scroll handlers for articles
   const handlePrevClickArticles = () => {
     setScrollIndexArticles((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
   };
@@ -68,7 +67,6 @@ const HomePage = () => {
     );
   };
 
-  // Independent scroll handlers for notes
   const handlePrevClickNotes = () => {
     setScrollIndexNotes((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
   };
@@ -89,17 +87,11 @@ const HomePage = () => {
   );
 
   const handleViewDetails = (note) => {
-    navigate("/note-details", { state: { note } }); // Pass note details via state
+    navigate("/note-details", { state: { note } });
   };
 
   return (
-    <Container
-      style={{
-        padding: 0,
-        width: "100%",
-      }}
-    >
-      {/* Hero Image */}
+    <Container style={{ padding: 0, width: "100%" }}>
       <div
         style={{
           marginTop: "-40px",
@@ -130,8 +122,7 @@ const HomePage = () => {
         Latest Articles
       </Typography>
 
-      {/* Article Section */}
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", mb: "2px" }}>
         <IconButton
           onClick={handlePrevClickArticles}
           disabled={scrollIndexArticles === 0}
@@ -148,13 +139,7 @@ const HomePage = () => {
           }}
         >
           {visibleArticles.map((article, index) => (
-            <Card
-              key={index}
-              style={{
-                flex: "1 1 25%", // 25% of the container width for 4 cards in a row
-                margin: "0 10px",
-              }}
-            >
+            <Card key={index} style={{ flex: "1 1 25%", margin: "0 10px" }}>
               {article.urlToImage && (
                 <CardMedia
                   component="img"
@@ -198,7 +183,6 @@ const HomePage = () => {
         Read from Article Hub...
       </Typography>
 
-      {/* Notes Section */}
       <div style={{ display: "flex", alignItems: "center" }}>
         <IconButton
           onClick={handlePrevClickNotes}
@@ -220,7 +204,7 @@ const HomePage = () => {
               key={index}
               style={{
                 position: "relative",
-                flex: "1 1 25%", // 25% of the container width for 4 cards in a row
+                flex: "1 1 25%",
                 margin: "0 10px",
                 height: "300px",
                 overflow: "visible",
@@ -228,23 +212,23 @@ const HomePage = () => {
               }}
               onClick={() => handleViewDetails(note)}
             >
-              {/* Floating Tag */}
-              <div
-                style={{
+              {/* Updated Floating Tag using Material-UI Typography */}
+              <Typography
+                variant="body2"
+                sx={{
                   position: "absolute",
-                  top: "-6px",
-                  left: "-15px",
-                  backgroundColor: note.tagColor || "#b958bf", // Default color or dynamic color
-                  color: "#fff",
-                  padding: "5px 10px",
+                  top: 10,
+                  right: 10,
+                  color: "white",
+                  backgroundColor: (theme) => theme.palette.secondary.main,
                   borderRadius: "5px",
+                  padding: "5px 10px",
                   fontSize: "12px",
                   fontWeight: "bold",
-                  zIndex: 10,
                 }}
               >
                 {note.tag || "Default"}
-              </div>
+              </Typography>
 
               <Card style={{ minHeight: "150px" }}>
                 {note.urlToImage && (
@@ -260,7 +244,7 @@ const HomePage = () => {
                     variant="h6"
                     component="h2"
                     style={{
-                      justifyContent: "center",
+                      // justifyContent: "center",
                       display: "flex",
                       marginBottom: "20px",
                     }}

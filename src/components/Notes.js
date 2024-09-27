@@ -3,11 +3,13 @@ import NoteContext from "../context/notes/NoteContext";
 import NoteItem from "./NoteItem";
 import AddNote from "./AddNote";
 import { useNavigate } from "react-router-dom";
-import NoteDetails from "./NoteDetails";
+import { Button } from "@mui/material"; // Import Material-UI Button
+
 const Notes = (props) => {
   let history = useNavigate();
   const context = useContext(NoteContext);
-  const { notes, getNotes, editNote } = context;
+  const { notes, getNotes, editNote, changeVisible, deleteNote } = context;
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       getNotes();
@@ -16,6 +18,7 @@ const Notes = (props) => {
     }
     // eslint-disable-next-line
   }, []);
+
   const ref = useRef(null);
   const refClose = useRef(null);
   const [note, setNote] = useState({
@@ -24,6 +27,7 @@ const Notes = (props) => {
     edescription: "",
     etag: "",
   });
+
   const updateNote = (currentNote) => {
     ref.current.click();
     setNote({
@@ -35,15 +39,16 @@ const Notes = (props) => {
   };
 
   const handleClick = (e) => {
-    e.preventDefault(); //So that page will not reload
+    e.preventDefault(); // Prevent page reload
     editNote(note.id, note.etitle, note.edescription, note.etag);
-
     refClose.current.click();
     // props.showAlert("Note Updated Successfully", "success");
   };
+
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
+
   return (
     <>
       <AddNote showAlert={props.showAlert} />
@@ -64,10 +69,12 @@ const Notes = (props) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content" style={{ padding: "10px" }}>
+            {" "}
+            {/* Added padding */}
             <div className="modal-header">
-              <h1 className="modal-etitle fs-5" id="exampleModalLabel">
+              <h1 className="modal-etitle fs-3" id="exampleModalLabel">
                 Edit Note
               </h1>
               <button
@@ -78,10 +85,10 @@ const Notes = (props) => {
               ></button>
             </div>
             <div className="modal-body">
-              <form className="my-4">
+              <form className="my-1">
                 <div className="mb-3">
                   <label htmlFor="etitle" className="form-label">
-                    eTitle
+                    Title
                   </label>
                   <input
                     type="text"
@@ -97,10 +104,9 @@ const Notes = (props) => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="edescription" className="form-label">
-                    eDescription
+                    Description
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     className="form-control"
                     id="edescription"
                     name="edescription"
@@ -108,11 +114,12 @@ const Notes = (props) => {
                     value={note.edescription}
                     minLength={5}
                     required
-                  />
+                    rows="3" // Set the number of rows for the textarea
+                  ></textarea>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="etag" className="form-label">
-                    eTag
+                    Tag
                   </label>
                   <input
                     type="text"
@@ -126,28 +133,30 @@ const Notes = (props) => {
               </form>
             </div>
             <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
+              <Button
+                variant="outlined"
+                color="secondary" // Changed to secondary
+                onClick={() => refClose.current.click()} // Close modal
                 ref={refClose}
+                style={{ marginRight: "auto" }} // Align the close button to the left
               >
                 Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
                 onClick={handleClick}
                 disabled={
                   note.etitle.length < 5 || note.edescription.length < 5
                 }
               >
                 Update Note
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </div>
+
       <div className="row my-5">
         <h2>Your Notes</h2>
         <div className="container">
@@ -161,6 +170,8 @@ const Notes = (props) => {
               updateNote={updateNote}
               note={note}
               showAlert={props.showAlert}
+              changeVisible={changeVisible}
+              deleteNote={deleteNote}
             />
           );
         })}

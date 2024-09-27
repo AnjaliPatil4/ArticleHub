@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+
 const Navbar = () => {
   let location = useLocation();
   let history = useNavigate();
@@ -7,6 +9,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     history("./home");
   };
+
   return (
     <>
       <nav
@@ -65,26 +68,33 @@ const Navbar = () => {
             </ul>
             {!localStorage.getItem("token") ? (
               <form className="d-flex">
-                <Link
-                  className="btn btn-primary mx-2"
-                  to="/login"
-                  role="button"
-                >
-                  Login
+                <Link to="/login" role="button">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className="mx-2"
+                  >
+                    Login
+                  </Button>
                 </Link>
-                <Link
-                  className="btn btn-primary mx-2"
-                  to="/signup"
-                  role="button"
-                >
-                  SignUp
+                <Link to="/signup" role="button">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className="mx-2"
+                  >
+                    SignUp
+                  </Button>
                 </Link>
               </form>
             ) : (
-              <button className="btn btn-primary" onClick={handlelogout}>
-                {" "}
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handlelogout}
+              >
                 Logout
-              </button>
+              </Button>
             )}
           </div>
         </div>

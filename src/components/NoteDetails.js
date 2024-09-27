@@ -1,3 +1,4 @@
+// NoteDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -8,8 +9,10 @@ import {
   Button,
   Box,
   CircularProgress,
-  TextField,
+  Rating,
 } from "@mui/material";
+
+import PostComment from "./PostComment"; // Import the PostComment component
 
 const NoteDetails = () => {
   const location = useLocation();
@@ -18,8 +21,6 @@ const NoteDetails = () => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [commentContent, setCommentContent] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token"));
 
   // Fetch comments when the component mounts
   useEffect(() => {
@@ -29,13 +30,13 @@ const NoteDetails = () => {
         const response = await fetch(url, { method: "GET" });
         const json = await response.json();
 
-        // Map through the comments to extract name and content
         const formattedComments = json.map((comment) => ({
-          name: comment.user.name, // Get the user's name
-          content: comment.content, // Get the comment content
+          name: comment.user.name,
+          content: comment.content,
+          rating: comment.rating || 3,
         }));
 
-        setComments(formattedComments); // Set the formatted comments
+        setComments(formattedComments);
       } catch (err) {
         setError("Failed to fetch comments.");
         console.error(err);
@@ -49,40 +50,9 @@ const NoteDetails = () => {
     }
   }, [note]);
 
-  // Handle form submission for adding a new comment
-  const handleCommentSubmit = async (e) => {
-    e.preventDefault();
-    if (!commentContent) return;
-
-    try {
-      const url = `http://localhost:5000/api/comments/add/${note._id}`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": localStorage.getItem("token"),
-        },
-        body: JSON.stringify({ content: commentContent }), // Send only the content
-      });
-
-      const json = await response.json();
-
-      if (!response.ok) {
-        throw new Error(json.message || "Failed to post comment.");
-      }
-
-      // Construct the new comment object using the response
-      const newComment = {
-        name: json["user-name"], // Extract the user name
-        content: json.comment.content, // Extract the content of the comment
-      };
-
-      setComments((prevComments) => [...prevComments, newComment]); // Update comments state
-      setCommentContent(""); // Clear the input field
-    } catch (err) {
-      setError("Failed to post comment.");
-      console.error(err);
-    }
+  // Function to handle adding a new comment
+  const handleCommentAdded = (newComment) => {
+    setComments((prevComments) => [...prevComments, newComment]);
   };
 
   if (!note) {
@@ -112,7 +82,12 @@ const NoteDetails = () => {
               {note.title}
             </Typography>
             <Typography variant="body1" paragraph>
-              {note.description}
+              {note.description.split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
               <Button
@@ -140,13 +115,26 @@ const NoteDetails = () => {
               {error}
             </Typography>
           ) : comments.length > 0 ? (
-            comments.map(({ name, content }, index) => (
+            comments.map(({ name, content, rating }, index) => (
               <Card key={index} sx={{ mb: 2 }}>
                 <CardContent>
-                  <Typography variant="h9" component="div">
-                    {name || "Anonymous"}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h9" component="div">
+                      {name || "Anonymous"}
+                    </Typography>
+                    <Rating value={rating} readOnly sx={{ mt: 1 }} />
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 1 }}
+                  >
                     {content}
                   </Typography>
                 </CardContent>
@@ -156,32 +144,8 @@ const NoteDetails = () => {
             <Typography align="center">No comments yet.</Typography>
           )}
 
-          {/* Comment input form, only visible if the user is logged in */}
-          {token ? (
-            <Box
-              component="form"
-              onSubmit={handleCommentSubmit}
-              sx={{ mt: 3, width: "100%", textAlign: "center" }}
-            >
-              <TextField
-                label="Add a comment"
-                variant="outlined"
-                fullWidth
-                value={commentContent}
-                onChange={(e) => setCommentContent(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <Button type="submit" variant="contained" color="primary">
-                Submit Comment
-              </Button>
-            </Box>
-          ) : (
-            <Typography align="center" color="text.secondary" sx={{ mt: 3 }}>
-              You need to{" "}
-              <Button onClick={() => navigate("/login")}>log in</Button> to add
-              a comment.
-            </Typography>
-          )}
+          {/* Use the PostComment component */}
+          <PostComment noteId={note._id} onCommentAdded={handleCommentAdded} />
         </Box>
       </Box>
     </Container>

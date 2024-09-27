@@ -14,7 +14,7 @@ router.get("/fetchnotes", fetchuser, async (req, res) => {
 });
 router.get("/allnotes", async (req, res) => {
   try {
-    const notes = await Notes.find();
+    const notes = await Notes.find({ visible: true });
 
     res.json(notes);
   } catch (error) {
@@ -42,6 +42,7 @@ router.post(
         description: req.body.description,
         tag: req.body.tag,
         user: req.user.id,
+        visible: req.body.visible || false,
       });
       res.json(notes);
     } catch (error) {
@@ -66,7 +67,8 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
       return res.status(401).send("Not Allowed");
     }
     const newnote = {};
-    const { title, description, tag } = req.body;
+    console.log(req.body);
+    const { title, description, tag, visible } = req.body;
     if (title) {
       newnote.title = title;
     }
@@ -76,6 +78,10 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
     if (tag) {
       newnote.tag = tag;
     }
+    if (visible == false || visible == true) {
+      newnote.visible = visible;
+    }
+    console.log(newnote);
     note = await Notes.findByIdAndUpdate(
       req.params.id,
       { $set: newnote },
