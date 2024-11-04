@@ -11,6 +11,8 @@ import HomePage from "./components/HomePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PersonalDashboard from "./components/PersonalDashboard";
 import NoteDetails from "./components/NoteDetails";
+import News from "./components/News";
+import CardsPage from "./components/Cards";
 function App() {
   const [alert, setAlert] = useState(null);
   const showAlert = (message, typ) => {
@@ -43,6 +45,7 @@ function App() {
               path="/notes"
               element={<PersonalDashboard showAlert={showAlert} />}
             />
+            <Route exact path="/cards" element={<CardsPage />} />
             <Route path="/note-details" element={<NoteDetails />} />
             <Route
               exact

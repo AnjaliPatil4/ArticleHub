@@ -11,12 +11,11 @@ import {
 } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import imageNotes from "./lovely-flowers-concept-with-modern-notebook (1).jpg";
+import News from "./News";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const defaultImage =
-    "https://images.pexels.com/photos/5537544/pexels-photo-5537544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
-  const [articles, setArticles] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [scrollIndexArticles, setScrollIndexArticles] = useState(0);
   const [scrollIndexNotes, setScrollIndexNotes] = useState(0);
@@ -42,32 +41,6 @@ const HomePage = () => {
     fetchNotes();
   }, []);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await axios.get(
-          "https://newsapi.org/v2/top-headlines?country=us&apiKey=24bcf6c46b474bec8c8e6a95e67f0cbe"
-        );
-        setArticles(response.data.articles);
-      } catch (error) {
-        console.error("Error fetching articles", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchArticles();
-  }, []);
-
-  const handlePrevClickArticles = () => {
-    setScrollIndexArticles((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
-  };
-
-  const handleNextClickArticles = () => {
-    setScrollIndexArticles((prevIndex) =>
-      prevIndex < Math.ceil(articles.length / 4) - 1 ? prevIndex + 1 : prevIndex
-    );
-  };
-
   const handlePrevClickNotes = () => {
     setScrollIndexNotes((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
   };
@@ -82,17 +55,13 @@ const HomePage = () => {
     scrollIndexNotes * 4,
     (scrollIndexNotes + 1) * 4
   );
-  const visibleArticles = articles.slice(
-    scrollIndexArticles * 4,
-    scrollIndexArticles * 4 + 4
-  );
 
   const handleViewDetails = (note) => {
     navigate("/note-details", { state: { note } });
   };
 
   return (
-    <Container style={{ padding: 0, width: "100%" }}>
+    <>
       <div
         style={{
           marginTop: "-47px",
@@ -125,52 +94,8 @@ const HomePage = () => {
         Latest Articles
       </Typography>
 
-      <div style={{ display: "flex", alignItems: "center", mb: "2px" }}>
-        <IconButton
-          onClick={handlePrevClickArticles}
-          disabled={scrollIndexArticles === 0}
-        >
-          <ArrowBackIos />
-        </IconButton>
-
-        <div
-          style={{
-            display: "flex",
-            overflow: "hidden",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          {visibleArticles.map((article, index) => (
-            <Card
-              key={index}
-              style={{ flex: "1 1 25%", margin: "0 10px" }}
-              onClick={() => window.open(article.url, "_blank")}
-            >
-              <CardMedia
-                component="img"
-                height="140"
-                image={article.urlToImage || defaultImage} // Use default image if not available
-                alt={article.title}
-              />
-              <CardContent>
-                <Typography variant="h6" component="h2">
-                  {article.title.substring(0, 30)}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {article.description?.substring(0, 30)}...
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <IconButton
-          onClick={handleNextClickArticles}
-          disabled={scrollIndexArticles === Math.ceil(articles.length / 4) - 1}
-        >
-          <ArrowForwardIos />
-        </IconButton>
+      <div>
+        <News />
       </div>
 
       <Typography
@@ -183,6 +108,7 @@ const HomePage = () => {
           marginTop: "50px",
           marginLeft: "50px",
           fontSize: "30px",
+          justifyContent: "center",
         }}
       >
         Read from Article Hub...
@@ -273,7 +199,7 @@ const HomePage = () => {
           <ArrowForwardIos />
         </IconButton>
       </div>
-    </Container>
+    </>
   );
 };
 
